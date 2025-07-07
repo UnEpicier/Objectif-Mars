@@ -1,4 +1,3 @@
-
 from interfaces.icommand_listener import ICommandListener
 from models.position import Position
 from models.orientation import Orientation
@@ -15,6 +14,9 @@ class Rover(ICommandListener):
     def execute_commands(self, commands: str) -> dict:
         ValidCommands = {'A', 'R', 'G', 'D'}
         commands = commands.strip().upper()
+        self.stopped = False
+        detected_obstacle = None
+
         for cmd in commands:
             if cmd not in ValidCommands:
                 return {
@@ -22,20 +24,20 @@ class Rover(ICommandListener):
                     "message": f"Commande invalide: {cmd}. Utilisez A (Avancer), R (Reculer), G (Gauche), D (Droite)",
                     "positions": self.position.__dict__,
                 }
-            if self.stopped:
-                break
-            match cmd:
-                case 'A':
-                    self.move(1)
-                case 'R':
-                    self.move(-1)
-                case 'G':
-                    self.turn_left()
-                case 'D':
-                    self.turn_right()
-                case _:
-                    raise ValueError(f"Commande inconnue: {cmd}")
-        return {
+
+            if cmd in {'A', 'R'}:
+                step = 1 if cmd == 'A' else -1
+                moved, obstacle_pos = self.move(step)
+                if not moved:
+                    self.stopped = True
+                    detected_obstacle = obstacle_pos
+                    break
+            elif cmd == 'G':
+                self.turn_left()
+            elif cmd == 'D':
+                self.turn_right()
+
+        response = {
             "status": "OBSTACLE" if self.stopped else "OK",
             "position": {
                 "x": self.position.x,
@@ -44,7 +46,12 @@ class Rover(ICommandListener):
             }
         }
 
-    def move(self, step):
+        if detected_obstacle:
+            response["obstacle"] = {"x": detected_obstacle[0], "y": detected_obstacle[1]}
+
+        return response
+
+    def move(self, step) -> tuple[bool, tuple[int, int] | None]:
         dx, dy = 0, 0
         match self.position.orientation:
             case Orientation.N:
@@ -60,10 +67,11 @@ class Rover(ICommandListener):
         ny = (self.position.y + dy) % self.height
 
         if (nx, ny) in self.obstacles:
-            self.stopped = True
+            return False, (nx, ny)
         else:
             self.position.x = nx
             self.position.y = ny
+            return True, None
 
     def turn_left(self):
         dirs = [Orientation.N, Orientation.W, Orientation.S, Orientation.E]

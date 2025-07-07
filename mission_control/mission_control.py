@@ -14,3 +14,7 @@ class MissionControl(ICommandSender):
             s.sendall(json.dumps({"commands": commands}).encode())
             response = s.recv(1024)
             return json.loads(response.decode())
+    
+    def close(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.close()
