@@ -1,4 +1,4 @@
-from mission_control.mission_control import MissionControl
+from src.mission_control.mission_control import MissionControl
 
 # Lettres autorisées
 COMMANDES_VALIDES = {'A', 'R', 'G', 'D'}

@@ -1,7 +1,9 @@
-from interfaces.icommand_listener import ICommandListener
-from models.position import Position
-from models.orientation import Orientation
-from models.obstacle import Obstacle
+from __future__ import annotations
+
+from src.rover.icommand_listener import ICommandListener
+from src.rover.models.position import Position
+from src.rover.models.orientation import Orientation
+from src.rover.models.obstacle import Obstacle
 
 class Rover(ICommandListener):
     def __init__(self, width, height, start: Position, obstacles: list[Obstacle]):

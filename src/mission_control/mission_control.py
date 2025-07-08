@@ -1,4 +1,4 @@
-from interfaces.icommand_sender import ICommandSender
+from src.mission_control.icommand_sender import ICommandSender
 import socket
 import json
 import random

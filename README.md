@@ -41,3 +41,8 @@
 
 -   On ne connaît pas le terrain, seulement la taille de la planète.
 -   La carte doit se rafraîchir après chaque commande.
+
+
+### Schéma de l'architecture de l'application
+
+![Schéma architecture](images/schema_architecture.png)

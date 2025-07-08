@@ -1,9 +1,9 @@
 import socket
 import json
-from models.position import Position
-from models.orientation import Orientation
-from models.obstacle import Obstacle
-from rover.rover import Rover
+from src.rover.models.position import Position
+from src.rover.models.orientation import Orientation
+from src.rover.models.obstacle import Obstacle
+from src.rover.rover import Rover
 
 rover = None
 
