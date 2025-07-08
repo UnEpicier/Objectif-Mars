@@ -1,5 +1,3 @@
-# ./mission_control/mission_control/mission_control.py
-
 from interfaces.icommand_sender import ICommandSender
 import socket
 import json
