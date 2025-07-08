@@ -30,7 +30,7 @@ def afficher_carte(pos):
     grid[y][x] = f"R{orientation_symbols.get(orientation, '?')}"
 
     print("\n📍 Carte du terrain :")
-    for row in reversed(grid):  # Pour que y=0 soit en bas
+    for row in reversed(grid):
         print(" ".join(row))
     print()
 
@@ -39,8 +39,14 @@ if __name__ == "__main__":
     try:
         mc = MissionControl()
 
-        # Première position affichée
-        result = mc.send_commands("")  # On récupère la position initiale
+        print("🛰️ Initialisation de la carte...")
+        init_response = mc.send_init()
+        if init_response["status"] != "OK":
+            print("❌ Échec de l'initialisation :", init_response["message"])
+            exit(1)
+
+        print("✅ Carte initialisée avec succès.")
+        result = mc.send_commands("") 
         if result["status"] == "OK":
             afficher_carte(result["position"])
 
@@ -49,12 +55,10 @@ if __name__ == "__main__":
             if cmds == "QUIT":
                 break
 
-            # Vérification des lettres invalides
             if not all(c in COMMANDES_VALIDES for c in cmds):
                 print("⚠️  Commande invalide. Utilisez uniquement les lettres : A (Avancer), R (Reculer), G (Gauche), D (Droite)")
                 continue
 
-            # Envoi des commandes valides
             result = mc.send_commands(cmds)
 
             if result["status"] == "OBSTACLE":
@@ -70,5 +74,5 @@ if __name__ == "__main__":
             afficher_carte(result["position"])
     finally:
         if mc:
-            mc.close()
-            print("WebSocket déconnecté")
+            mc.send_commands("QUIT")
+            print("Connexion terminée")
