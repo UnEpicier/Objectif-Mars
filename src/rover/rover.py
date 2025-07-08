@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from src.rover.icommand_listener import ICommandListener
+from src.rover.models.move_result import MoveResult
 from src.rover.models.position import Position
 from src.rover.models.orientation import Orientation
 from src.rover.models.obstacle import Obstacle
@@ -29,10 +30,10 @@ class Rover(ICommandListener):
 
             if cmd in {'A', 'R'}:
                 step = 1 if cmd == 'A' else -1
-                moved, obstacle_pos = self.move(step)
-                if not moved:
+                result = self.move(step)
+                if not result.success:
                     self.stopped = True
-                    detected_obstacle = obstacle_pos
+                    detected_obstacle = result.obstacle_position
                     break
             elif cmd == 'G':
                 self.turn_left()
@@ -53,7 +54,7 @@ class Rover(ICommandListener):
 
         return response
 
-    def move(self, step) -> tuple[bool, tuple[int, int] | None]:
+    def move(self, step) -> MoveResult:
         dx, dy = 0, 0
         match self.position.orientation:
             case Orientation.N:
@@ -69,11 +70,11 @@ class Rover(ICommandListener):
         ny = (self.position.y + dy) % self.height
 
         if (nx, ny) in self.obstacles:
-            return False, (nx, ny)
+            return MoveResult(False, (nx, ny))
         else:
             self.position.x = nx
             self.position.y = ny
-            return True, None
+            return MoveResult(True, None)
 
     def turn_left(self):
         dirs = [Orientation.N, Orientation.W, Orientation.S, Orientation.E]
