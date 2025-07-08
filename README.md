@@ -12,7 +12,7 @@
 ### Contraintes
 
 -   Le projet doit inclure une série de tests afin de garantir le bon fonctionnement des deux parties.
--   Le projet utilise le langage de programmation GoLang, pour sa simplicité de lecteur et donc de maintenabilité. La partie sécurité est aussi plus facile à aborder qu'avec d'autres langages.
+-   Le projet utilise le langage de programmation Python, pour sa simplicité de lecteur et donc de maintenabilité. La partie sécurité est aussi plus facile à aborder qu'avec d'autres langages.
 -   Le projet doit inclure un simulateur de Rover et un générateur de planète afin de pouvoir réaliser des tests de communications et de performances.
 -   Le projet doit être documenté, notamment sur la partie mise en communication et contrôles du MissionControl.
 -   Le projet doit être adapté au développement sur toute plateforme et n'est donc pas restreint à des OS et IDE spécifiques.
